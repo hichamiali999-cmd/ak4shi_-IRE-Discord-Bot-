@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const CLIENT_ID = '1556457565620019250;
 const CLIENT_SECRET = '8jDo-TzEpcli99Q6lRYmeLgzMNFeIMCE;
-const REDIRECT_URI = 'https://(رابط_الرایلي_ديالك_هنا)/auth/discord/callback';
+const REDIRECT_URI = 'https://ak4shi-ire-discord-bot-production.up.railway.app/auth/discord/callback';
 
 app.use(session({
     secret: 'ak4shi_super_secret_999',
