@@ -86,3 +86,23 @@ client.on('messageCreate', async (message) => {
 });
 
 client.login(process.env.DISCORD_TOKEN);
+client.on('messageCreate', async (message) => {
+    if (message.author.bot) return;
+
+    if (message.content === '!serverinfo') {
+        const guild = message.guild;
+        const embed = {
+            color: 0x0099ff,
+            title: `📊 Server Info: ${guild.name}`,
+            fields: [
+                { name: '👑 Owner', value: `<@${guild.ownerId}>`, inline: true },
+                { name: '👥 Members', value: `${guild.memberCount}`, inline: true },
+                { name: '📅 Created At', value: `${guild.createdAt.toDateString()}`, inline: false }
+            ],
+            thumbnail: {
+                url: guild.iconURL() ? guild.iconURL() : null,
+            },
+        };
+        message.channel.send({ embeds: [embed] });
+    }
+});
