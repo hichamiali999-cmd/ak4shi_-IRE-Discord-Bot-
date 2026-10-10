@@ -14,6 +14,7 @@ app.use(session({
   saveUninitialized: false,
 }));
 
+// هاد الـ Route كيخلي Railway يعرف بلي السيرفر خدام ومزيان فوراً
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
 });
@@ -98,12 +99,12 @@ app.get('/logout', (req, res) => {
   });
 });
 
-// تشغيل السيرفر أولاً
+// بدء تشغيل سيرفر الويب أولاً وبشكل مؤكد
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Web Server is running on port ${PORT}`);
 });
 
-// تشغيل بوت الديسكورد
+// تشغيل البوت بطريقة لا تأثر على الويب
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -113,7 +114,7 @@ const client = new Client({
 });
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  console.log(`Bot logged in as ${client.user.tag}!`);
 });
 
 client.login(process.env.DISCORD_TOKEN);
