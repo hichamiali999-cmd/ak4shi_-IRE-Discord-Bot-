@@ -14,7 +14,7 @@ const client = new Client({
 const app = express();
 const PORT = process.env.PORT || 3000;
 const CLIENT_ID = '1556457565620019250';
-const CLIENT_SECRET = '8jDo-TzEpcli99Q6lRYmeLgzMNFeIMCE;
+const CLIENT_SECRET = '8jDo-TzEpcli99Q61RYmeLgzMNFeIMCE';
 const REDIRECT_URI = 'https://ak4shi-ire-discord-bot-production.up.railway.app/auth/discord/callback';
 
 app.use(session({
