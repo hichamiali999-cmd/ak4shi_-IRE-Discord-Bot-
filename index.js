@@ -2,8 +2,6 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const express = require('express');
 const session = require('express-session');
 const axios = require('axios');
-
-// إعدادات البوت
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -15,10 +13,8 @@ const client = new Client({
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// معلومات التطبيق (بدل CLIENT_ID و CLIENT_SECRET بالمعلومات الحقيقية ديالك من Discord Developer Portal)
-const CLIENT_ID = 'دير_هنا_Client_Id_ديالك';
-const CLIENT_SECRET = 'دير_هنا_Client_Secret_ديالك';
+const CLIENT_ID = '1556457565620019250;
+const CLIENT_SECRET = '8jDo-TzEpcli99Q6lRYmeLgzMNFeIMCE;
 const REDIRECT_URI = 'https://(رابط_الرایلي_ديالك_هنا)/auth/discord/callback';
 
 app.use(session({
