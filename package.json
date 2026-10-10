@@ -1,7 +1,16 @@
-"dependencies": {
+{
+  "name": "ak4shi_Fire",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
     "axios": "^1.7.9",
     "discord.js": "^14.14.0",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "express-session": "^1.18.1"
   }
+}
