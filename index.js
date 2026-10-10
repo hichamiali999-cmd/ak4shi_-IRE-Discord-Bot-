@@ -1,18 +1,15 @@
 import { Client, GatewayIntentBits } from 'discord.js';
 import express from 'express';
 import session from 'express-session';
+import dotenv from 'dotenv';
 
-// ⚠️ حط هنا المعلومات الحقيقية ديالك بلا ما تستعمل .env في هاد البلاصة
-const CLIENT_ID = "1556457565620019250";
-const CLIENT_SECRET = "8jDo-TzEpcli99Q6lRYmeLgzMNFeIMCE";
-const REDIRECT_URI = "https://ak4shi-ire-discord-bot-production.up.railway.app/auth/discord/callback";
-const DISCORD_TOKEN = "حط_هنا_Token_ديال_البوت_ديالك";
+dotenv.config();
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(session({
-  secret: 'supersecretkeyak4shi',
+  secret: process.env.SESSION_SECRET || 'supersecretkeyak4shi',
   resave: false,
   saveUninitialized: false,
 }));
@@ -57,7 +54,9 @@ app.get('/', (req, res) => {
 });
 
 app.get('/auth/discord', (req, res) => {
-  const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
+  const clientId = process.env.CLIENT_ID;
+  const redirectUri = process.env.REDIRECT_URI;
+  const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=identify%20guilds`;
   res.redirect(discordAuthUrl);
 });
 
@@ -69,11 +68,11 @@ app.get('/auth/discord/callback', async (req, res) => {
     const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
       method: 'POST',
       body: new URLSearchParams({
-        client_id: CLIENT_ID,
-        client_secret: CLIENT_SECRET,
+        client_id: process.env.CLIENT_ID,
+        client_secret: process.env.CLIENT_SECRET,
         grant_type: 'authorization_code',
         code: code,
-        redirect_uri: REDIRECT_URI,
+        redirect_uri: process.env.REDIRECT_URI,
       }),
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     });
@@ -99,10 +98,12 @@ app.get('/logout', (req, res) => {
   });
 });
 
+// تشغيل السيرفر أولاً
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
+// تشغيل بوت الديسكورد
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -115,4 +116,4 @@ client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
 
-client.login(DISCORD_TOKEN);
+client.login(process.env.DISCORD_TOKEN);
