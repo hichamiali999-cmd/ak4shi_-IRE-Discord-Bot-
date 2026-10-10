@@ -5,15 +5,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// 1. تشغيل سيرفر الويب أولاً وبشكل مستقل
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000; // ثبتناه في 3000 حيت هو اللي كيتسنا الرايلواي في الإعدادات
 
 app.use(session({
   secret: process.env.SESSION_SECRET || 'supersecretkey',
   resave: false,
   saveUninitialized: false,
 }));
+
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
 
 app.get('/', (req, res) => {
   const user = req.session.user;
@@ -22,7 +25,6 @@ app.get('/', (req, res) => {
     <html lang="ar" dir="rtl">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>لوحة تحكم البوت - ak4shi</title>
         <style>
             body { font-family: Arial, sans-serif; background-color: #0f172a; color: #fff; text-align: center; padding-top: 50px; }
@@ -30,26 +32,21 @@ app.get('/', (req, res) => {
             h1 { color: #38bdf8; font-size: 1.5rem; }
             .status { color: #4ade80; font-weight: bold; }
             .btn { display: inline-block; margin-top: 15px; background: #5865F2; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; }
-            .btn:hover { background: #4752C4; }
-            .btn-invite { background: #10b981; margin-right: 5px; }
-            .btn-invite:hover { background: #059669; }
             img { width: 80px; height: 80px; border-radius: 50%; margin-top: 10px; }
         </style>
     </head>
     <body>
         <div class="card">
             <h1>لوحة تحكم البوت 🚀</h1>
-            <p>حالة السيرفر: <span class="status">● Online (502 Fixed)</span></p>
+            <p>حالة السيرفر: <span class="status">● Online (Port 3000)</span></p>
             ${user ? `
                 <img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" alt="Avatar">
                 <p>مرحباً، <b>${user.username}</b>!</p>
                 <a href="/logout" class="btn" style="background: #ef4444;">تسجيل الخروج</a>
             ` : `
-                <p>قم بتسجيل الدخول بحسابك على ديسكورد لإدارة البوت.</p>
+                <p>قم بتسجيل الدخول بحسابك على ديسكورد.</p>
                 <a href="/auth/discord" class="btn">تسجيل الدخول بـ Discord</a>
             `}
-            <br><br>
-            <a href="https://discord.com/api/oauth2/authorize?client_id=${process.env.CLIENT_ID}&permissions=8&scope=bot" target="_blank" class="btn btn-invite">إضافة البوت</a>
         </div>
     </body>
     </html>
@@ -79,10 +76,7 @@ app.get('/auth/discord/callback', async (req, res) => {
     });
 
     const tokenData = await tokenResponse.json();
-    if (!tokenData.access_token) {
-      console.log('Token Error:', tokenData);
-      return res.redirect('/');
-    }
+    if (!tokenData.access_token) return res.redirect('/');
 
     const userResponse = await fetch('https://discord.com/api/users/@me', {
       headers: { authorization: `Bearer ${tokenData.access_token}` },
@@ -92,7 +86,6 @@ app.get('/auth/discord/callback', async (req, res) => {
     req.session.user = userData;
     res.redirect('/');
   } catch (error) {
-    console.error('OAuth Callback Error:', error);
     res.redirect('/');
   }
 });
@@ -104,10 +97,9 @@ app.get('/logout', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Web Dashboard is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
 
-// 2. تشغيل بوت الديسكورد
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -118,12 +110,6 @@ const client = new Client({
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.on('messageCreate', (message) => {
-  if (message.content === '!ping') {
-    message.reply('Pong! 🏓 Bot is online and working!');
-  }
 });
 
 client.login(process.env.DISCORD_TOKEN);
