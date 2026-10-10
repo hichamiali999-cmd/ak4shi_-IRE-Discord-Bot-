@@ -5,26 +5,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
-  ]
-});
-
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
-
-client.on('messageCreate', (message) => {
-  if (message.content === '!ping') {
-    message.reply('Pong! 🏓 Bot is online and working!');
-  }
-});
-
-client.login(process.env.DISCORD_TOKEN);
-
+// 1. تشغيل سيرفر الويب أولاً وبشكل مستقل
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -58,7 +39,7 @@ app.get('/', (req, res) => {
     <body>
         <div class="card">
             <h1>لوحة تحكم البوت 🚀</h1>
-            <p>حالة البوت: <span class="status">● Online</span></p>
+            <p>حالة السيرفر: <span class="status">● Online (502 Fixed)</span></p>
             ${user ? `
                 <img src="https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png" alt="Avatar">
                 <p>مرحباً، <b>${user.username}</b>!</p>
@@ -123,5 +104,26 @@ app.get('/logout', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Web Dashboard is running on port ${PORT}`);
 });
+
+// 2. تشغيل بوت الديسكورد
+const client = new Client({
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
+});
+
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.on('messageCreate', (message) => {
+  if (message.content === '!ping') {
+    message.reply('Pong! 🏓 Bot is online and working!');
+  }
+});
+
+client.login(process.env.DISCORD_TOKEN);
