@@ -1,7 +1,7 @@
-const { Client, GatewayIntentBits } = require('discord.js');
-const express = import('express');
-const session = import('express-session');
-const axios = import('axios');
+import { Client, GatewayIntentBits } from 'discord.js';
+import express from 'express';
+import session from 'express-session';
+import axios from 'axios';
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
