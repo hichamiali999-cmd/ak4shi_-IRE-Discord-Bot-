@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// 1. إعداد بوت الديسكورد
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -26,7 +25,6 @@ client.on('messageCreate', (message) => {
 
 client.login(process.env.DISCORD_TOKEN);
 
-// 2. إعداد خادم الويب (Dashboard & OAuth2)
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -36,7 +34,6 @@ app.use(session({
   saveUninitialized: false,
 }));
 
-// الصفحة الرئيسية
 app.get('/', (req, res) => {
   const user = req.session.user;
   res.send(`
@@ -78,13 +75,11 @@ app.get('/', (req, res) => {
   `);
 });
 
-// مسار توجيه المستخدم لتسجيل الدخول
 app.get('/auth/discord', (req, res) => {
   const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${process.env.CLIENT_ID}&redirect_uri=${encodeURIComponent(process.env.REDIRECT_URI)}&response_type=code&scope=identify%20guilds`;
   res.redirect(discordAuthUrl);
 });
 
-// مسار الـ Callback
 app.get('/auth/discord/callback', async (req, res) => {
   const code = req.query.code;
   if (!code) return res.redirect('/');
@@ -121,13 +116,12 @@ app.get('/auth/discord/callback', async (req, res) => {
   }
 });
 
-// مسار تسجيل الخروج
 app.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/');
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Web Dashboard is running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server is running on port ${PORT}`);
 });
